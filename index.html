@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASMR Mixer</title>
     <style>
-        /* Reset and base styles */
+        /* Reset and Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -24,11 +24,11 @@
 
         /* Container */
         .container {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-            max-width: 500px;
+            max-width: 700px;
             width: 100%;
         }
 
@@ -63,6 +63,12 @@
             border-color: #777;
         }
 
+        .uploaded-file {
+            margin-top: 10px;
+            color: #333;
+            font-style: italic;
+        }
+
         /* Effects Selection */
         .effects-section {
             margin-bottom: 20px;
@@ -80,30 +86,29 @@
             gap: 10px;
         }
 
-        .effects-section .effects-options label {
-            flex: 1 1 30%;
+        .effects-section .effect-control {
+            flex: 1 1 45%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             background: #e0e0e0;
             padding: 10px;
             border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
             transition: background 0.3s;
-            user-select: none;
         }
 
-        .effects-section .effects-options label:hover {
+        .effects-section .effect-control:hover {
             background: #d5d5d5;
         }
 
-        .effects-section .effects-options input {
-            display: none;
+        .effects-section .effect-control input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
         }
 
-        .effects-section .effects-options input:checked + span {
-            background: #a0c4ff;
-            color: #fff;
-            border-radius: 4px;
-            padding: 5px;
+        .effects-section .volume-slider {
+            width: 60px;
+            cursor: pointer;
         }
 
         /* Controls */
@@ -123,7 +128,12 @@
             transition: background 0.3s;
         }
 
-        .controls button:hover {
+        .controls button:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        .controls button:hover:not(:disabled) {
             background: #6f7fff;
         }
 
@@ -142,14 +152,19 @@
             transition: background 0.3s;
         }
 
-        .download-section button:hover {
+        .download-section button:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        .download-section button:hover:not(:disabled) {
             background: #28c290;
         }
 
         /* Responsive */
         @media (max-width: 600px) {
-            .effects-section .effects-options label {
-                flex: 1 1 45%;
+            .effects-section .effect-control {
+                flex: 1 1 100%;
             }
         }
     </style>
@@ -161,50 +176,69 @@
         <!-- Upload Section -->
         <div class="upload-section">
             <label for="audio-upload">Upload Your MP3 File:</label>
-            <input type="file" id="audio-upload" accept="audio/mp3">
+            <input type="file" id="audio-upload" accept="audio/mpeg, audio/mp3, audio/*">
+            <div class="uploaded-file" id="uploaded-file">No file uploaded.</div>
         </div>
 
         <!-- Effects Selection -->
         <div class="effects-section">
             <label>Select Ambient Effects:</label>
             <div class="effects-options">
-                <label>
-                    <input type="checkbox" value="rain">
-                    <span>Rain</span>
-                </label>
-                <label>
-                    <input type="checkbox" value="wind">
-                    <span>Wind</span>
-                </label>
-                <label>
-                    <input type="checkbox" value="cafe">
-                    <span>Café</span>
-                </label>
-                <label>
-                    <input type="checkbox" value="forest">
-                    <span>Forest</span>
-                </label>
-                <label>
-                    <input type="checkbox" value="ocean">
-                    <span>Ocean</span>
-                </label>
-                <label>
-                    <input type="checkbox" value="night">
-                    <span>Night</span>
-                </label>
+                <div class="effect-control">
+                    <label>
+                        <input type="checkbox" value="rain">
+                        Rain
+                    </label>
+                    <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider" data-effect="rain" disabled>
+                </div>
+                <div class="effect-control">
+                    <label>
+                        <input type="checkbox" value="wind">
+                        Wind
+                    </label>
+                    <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider" data-effect="wind" disabled>
+                </div>
+                <div class="effect-control">
+                    <label>
+                        <input type="checkbox" value="cafe">
+                        Café
+                    </label>
+                    <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider" data-effect="cafe" disabled>
+                </div>
+                <div class="effect-control">
+                    <label>
+                        <input type="checkbox" value="forest">
+                        Forest
+                    </label>
+                    <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider" data-effect="forest" disabled>
+                </div>
+                <div class="effect-control">
+                    <label>
+                        <input type="checkbox" value="ocean">
+                        Ocean
+                    </label>
+                    <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider" data-effect="ocean" disabled>
+                </div>
+                <div class="effect-control">
+                    <label>
+                        <input type="checkbox" value="night">
+                        Night
+                    </label>
+                    <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider" data-effect="night" disabled>
+                </div>
             </div>
         </div>
 
         <!-- Controls -->
         <div class="controls">
-            <button id="play-btn">Play</button>
-            <button id="pause-btn">Pause</button>
-            <button id="stop-btn">Stop</button>
+            <button id="play-btn" disabled>Play</button>
+            <button id="pause-btn" disabled>Pause</button>
+            <button id="stop-btn" disabled>Stop</button>
         </div>
 
         <!-- Download Section -->
         <div class="download-section">
-            <button id="download-btn">Download Mixed Audio</button>
+            <button id="download-btn" disabled>Download Mixed Audio</button>
         </div>
     </div>
 
@@ -220,88 +254,126 @@
         const pauseBtn = document.getElementById('pause-btn');
         const stopBtn = document.getElementById('stop-btn');
         const downloadBtn = document.getElementById('download-btn');
-        const effectCheckboxes = document.querySelectorAll('.effects-options input');
+        const effectCheckboxes = document.querySelectorAll('.effects-options input[type="checkbox"]');
+        const volumeSliders = document.querySelectorAll('.volume-slider');
+        const uploadedFileDisplay = document.getElementById('uploaded-file');
 
         // Variables
         let userAudioBuffer = null;
-        let ambientBuffers = {};
-        let selectedEffects = [];
         let isPlaying = false;
-        let sourceNodes = [];
-        let ambientSources = [];
+        let isPaused = false;
+        let userSource = null;
+        const ambientSources = {};
+        const ambientGainNodes = {};
 
-        // Load Ambient Sounds
-        const ambientSounds = {
-            rain: 'data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAwAAAAD//2Q==', // Placeholder: Replace with actual base64 audio data
-            wind: 'data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAwAAAAD//2Q==',
-            cafe: 'data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAwAAAAD//2Q==',
-            forest: 'data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAwAAAAD//2Q==',
-            ocean: 'data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAwAAAAD//2Q==',
-            night: 'data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAwAAAAD//2Q=='
-        };
+        // Preload Ambient Sounds
+        const ambientEffects = ['rain', 'wind', 'cafe', 'forest', 'ocean', 'night'];
+        let loadedAmbientEffects = 0;
 
-        // Function to fetch and decode ambient sounds
-        async function loadAmbientSounds() {
-            const entries = Object.entries(ambientSounds);
-            for (const [key, url] of entries) {
-                try {
-                    const response = await fetch(url);
+        ambientEffects.forEach(effect => {
+            const path = `sfx/${effect}.mp3`;
+            fetch(path)
+                .then(response => {
                     if (!response.ok) {
-                        throw new Error(`Network response was not ok for ${key}`);
+                        throw new Error(`Failed to load ${effect} sound.`);
                     }
-                    const arrayBuffer = await response.arrayBuffer();
-                    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-                    ambientBuffers[key] = audioBuffer;
-                } catch (error) {
-                    console.error(`Error loading ${key} sound:`, error);
-                }
+                    return response.arrayBuffer();
+                })
+                .then(arrayBuffer => audioCtx.decodeAudioData(arrayBuffer))
+                .then(audioBuffer => {
+                    ambientSources[effect] = audioBuffer;
+                    loadedAmbientEffects++;
+                    if (loadedAmbientEffects === ambientEffects.length) {
+                        console.log('All ambient sounds loaded.');
+                        checkEnableControls();
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert(`Error loading ${effect} sound. Please ensure the file exists in the sfx folder.`);
+                });
+        });
+
+        // Enable controls after user uploads audio and ambient sounds are loaded
+        function checkEnableControls() {
+            if (userAudioBuffer && loadedAmbientEffects === ambientEffects.length) {
+                playBtn.disabled = false;
+                downloadBtn.disabled = false;
+                effectCheckboxes.forEach(checkbox => {
+                    const slider = document.querySelector(`.volume-slider[data-effect="${checkbox.value}"]`);
+                    checkbox.disabled = false;
+                    slider.disabled = false;
+                });
             }
         }
-
-        // Load default ambient sounds
-        loadAmbientSounds();
-
-        // Function to load default user audio
-        async function loadDefaultAudio() {
-            const defaultAudioURL = 'data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAwAAAAD//2Q=='; // Placeholder: Replace with actual base64 audio data
-            try {
-                const response = await fetch(defaultAudioURL);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok for default audio');
-                }
-                const arrayBuffer = await response.arrayBuffer();
-                userAudioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-            } catch (error) {
-                console.error('Error loading default audio:', error);
-            }
-        }
-
-        // Load default audio on startup
-        loadDefaultAudio();
 
         // Handle User Audio Upload
         audioUpload.addEventListener('change', async (e) => {
             const file = e.target.files[0];
-            if (file && file.type === 'audio/mp3') {
-                try {
-                    const arrayBuffer = await file.arrayBuffer();
-                    userAudioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-                    alert('Audio file loaded successfully!');
-                } catch (error) {
-                    console.error('Error decoding uploaded audio:', error);
-                    alert('Failed to load the audio file. Please try a different MP3 file.');
+            if (file) {
+                const validTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/x-m4a'];
+                if (validTypes.includes(file.type)) {
+                    try {
+                        const arrayBuffer = await file.arrayBuffer();
+                        userAudioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+                        uploadedFileDisplay.textContent = `Uploaded File: ${file.name}`;
+                        alert('Audio file loaded successfully!');
+                        checkEnableControls();
+                    } catch (error) {
+                        console.error('Error decoding uploaded audio:', error);
+                        uploadedFileDisplay.textContent = 'Failed to load file.';
+                        alert('Failed to decode the audio file. Please ensure it is a valid MP3 file.');
+                    }
+                } else {
+                    uploadedFileDisplay.textContent = 'Invalid file type.';
+                    alert('Invalid file type. Please upload a valid MP3 file.');
                 }
             } else {
-                alert('Please upload a valid MP3 file.');
+                uploadedFileDisplay.textContent = 'No file uploaded.';
             }
         });
 
-        // Handle Effect Selection
+        // Handle Effect Selection and Volume
         effectCheckboxes.forEach(checkbox => {
             checkbox.addEventListener('change', () => {
-                selectedEffects = Array.from(effectCheckboxes)
-                                        .filter(cb => cb.checked)
-                                        .map(cb => cb.value);
+                const effect = checkbox.value;
+                const volumeSlider = document.querySelector(`.volume-slider[data-effect="${effect}"]`);
+                const volume = parseFloat(volumeSlider.value);
+
+                if (checkbox.checked) {
+                    if (ambientSources[effect]) {
+                        const source = audioCtx.createBufferSource();
+                        source.buffer = ambientSources[effect];
+                        source.loop = true;
+
+                        const gainNode = audioCtx.createGain();
+                        gainNode.gain.value = volume;
+
+                        source.connect(gainNode).connect(audioCtx.destination);
+                        source.start(0);
+
+                        // Store references for control
+                        ambientGainNodes[effect] = gainNode;
+                        ambientSources[effect].source = source; // Attach source to buffer
+                    } else {
+                        alert(`Ambient sound for ${effect} is not loaded yet.`);
+                        checkbox.checked = false;
+                    }
+                } else {
+                    // Stop and remove the ambient sound
+                    stopAmbientSound(effect);
+                }
+            });
+        });
+
+        // Handle Volume Changes for Ambient Sounds
+        volumeSliders.forEach(slider => {
+            slider.addEventListener('input', () => {
+                const effect = slider.getAttribute('data-effect');
+                const volume = parseFloat(slider.value);
+                if (ambientGainNodes[effect]) {
+                    ambientGainNodes[effect].gain.setValueAtTime(volume, audioCtx.currentTime);
+                }
             });
         });
 
@@ -310,7 +382,7 @@
             if (isPlaying) return;
 
             if (!userAudioBuffer) {
-                alert('No audio loaded.');
+                alert('No audio loaded. Please upload a valid MP3 file.');
                 return;
             }
 
@@ -320,51 +392,88 @@
             }
 
             // Create source for user audio
-            const userSource = audioCtx.createBufferSource();
+            userSource = audioCtx.createBufferSource();
             userSource.buffer = userAudioBuffer;
-            userSource.connect(audioCtx.destination);
-            userSource.start(0);
-            sourceNodes.push(userSource);
+            userSource.loop = false;
 
-            // Create sources for ambient sounds
-            selectedEffects.forEach(effect => {
-                const ambientBuffer = ambientBuffers[effect];
-                if (ambientBuffer) {
-                    const ambientSource = audioCtx.createBufferSource();
-                    ambientSource.buffer = ambientBuffer;
-                    ambientSource.loop = true;
-                    ambientSource.connect(audioCtx.destination);
-                    ambientSource.start(0);
-                    ambientSources.push(ambientSource);
-                } else {
-                    console.warn(`Ambient sound "${effect}" is not loaded.`);
-                }
-            });
+            const userGain = audioCtx.createGain();
+            userGain.gain.value = 1; // Default volume
+
+            userSource.connect(userGain).connect(audioCtx.destination);
+            userSource.start(0);
 
             isPlaying = true;
+            isPaused = false;
+
+            // Enable pause and stop buttons
+            pauseBtn.disabled = false;
+            stopBtn.disabled = false;
         }
 
         // Pause Function
         function pauseAudio() {
-            if (!isPlaying) return;
+            if (!isPlaying || isPaused) return;
             audioCtx.suspend();
+            isPaused = true;
+            pauseBtn.textContent = 'Resume';
         }
 
         // Resume Function
-        function resumeAudio() {
-            if (isPlaying && audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+        async function resumeAudio() {
+            if (!isPlaying || !isPaused) return;
+            await audioCtx.resume();
+            isPaused = false;
+            pauseBtn.textContent = 'Pause';
         }
 
         // Stop Function
         function stopAudio() {
             if (!isPlaying) return;
-            sourceNodes.forEach(source => source.stop());
-            ambientSources.forEach(source => source.stop());
-            sourceNodes = [];
-            ambientSources = [];
+
+            // Stop user audio
+            if (userSource) {
+                userSource.stop();
+                userSource.disconnect();
+                userSource = null;
+            }
+
+            // Stop all ambient sounds
+            ambientEffects.forEach(effect => {
+                if (ambientSources[effect] && ambientSources[effect].source) {
+                    ambientSources[effect].source.stop();
+                    ambientSources[effect].source.disconnect();
+                    ambientSources[effect].source = null;
+                }
+                if (ambientGainNodes[effect]) {
+                    ambientGainNodes[effect].disconnect();
+                    delete ambientGainNodes[effect];
+                }
+            });
+
             isPlaying = false;
+            isPaused = false;
+            pauseBtn.textContent = 'Pause';
+
+            // Reset UI
+            playBtn.disabled = false;
+            pauseBtn.disabled = true;
+            stopBtn.disabled = true;
+
+            // Uncheck all ambient effects
+            effectCheckboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    checkbox.checked = false;
+                }
+            });
+
+            // Reset volume sliders to default value
+            volumeSliders.forEach(slider => {
+                slider.value = 0.5;
+                const effect = slider.getAttribute('data-effect');
+                if (ambientGainNodes[effect]) {
+                    ambientGainNodes[effect].gain.setValueAtTime(0.5, audioCtx.currentTime);
+                }
+            });
         }
 
         // Download Function
@@ -377,24 +486,34 @@
             // Create Offline Audio Context for rendering
             const offlineCtx = new OfflineAudioContext(
                 userAudioBuffer.numberOfChannels,
-                userAudioBuffer.length,
+                userAudioBuffer.length + 600, // Extra buffer time for ambient sounds
                 userAudioBuffer.sampleRate
             );
 
-            // User Audio Source
-            const userSource = offlineCtx.createBufferSource();
-            userSource.buffer = userAudioBuffer;
-            userSource.connect(offlineCtx.destination);
-            userSource.start(0);
+            // Create user audio source
+            const userSourceOffline = offlineCtx.createBufferSource();
+            userSourceOffline.buffer = userAudioBuffer;
+            userSourceOffline.loop = false;
 
-            // Ambient Sources
-            selectedEffects.forEach(effect => {
-                const ambientBuffer = ambientBuffers[effect];
-                if (ambientBuffer) {
+            const userGainOffline = offlineCtx.createGain();
+            userGainOffline.gain.value = 1;
+
+            userSourceOffline.connect(userGainOffline).connect(offlineCtx.destination);
+            userSourceOffline.start(0);
+
+            // Create ambient sound sources
+            ambientEffects.forEach(effect => {
+                const checkbox = document.querySelector(`.effects-options input[value="${effect}"]`);
+                const slider = document.querySelector(`.volume-slider[data-effect="${effect}"]`);
+                if (checkbox.checked && ambientSources[effect]) {
                     const ambientSource = offlineCtx.createBufferSource();
-                    ambientSource.buffer = ambientBuffer;
+                    ambientSource.buffer = ambientSources[effect];
                     ambientSource.loop = true;
-                    ambientSource.connect(offlineCtx.destination);
+
+                    const ambientGainOffline = offlineCtx.createGain();
+                    ambientGainOffline.gain.value = parseFloat(slider.value);
+
+                    ambientSource.connect(ambientGainOffline).connect(offlineCtx.destination);
                     ambientSource.start(0);
                 }
             });
@@ -419,7 +538,7 @@
             }
         }
 
-        // Helper function to convert buffer to WAV
+        // Helper Function to Convert AudioBuffer to WAV Blob
         function bufferToWave(abuffer, len) {
             const numOfChan = abuffer.numberOfChannels;
             const length = len * numOfChan * 2 + 44;
@@ -449,12 +568,12 @@
             setUint32(length - pos - 4); // data length
 
             // Write interleaved data
-            for (i = 0; i < abuffer.numberOfChannels; i++) {
+            for(i = 0; i < abuffer.numberOfChannels; i++) {
                 channels.push(abuffer.getChannelData(i));
             }
 
-            while (pos < length) {
-                for (i = 0; i < numOfChan; i++) {
+            while(pos < length) {
+                for(i = 0; i < numOfChan; i++) {
                     // Clamp the sample
                     sample = Math.max(-1, Math.min(1, channels[i][offset]));
                     // Scale to 16-bit integer
@@ -463,10 +582,10 @@
                     pos += 2;
                 }
                 offset++;
-                if (offset >= abuffer.length) break;
+                if(offset >= abuffer.length) break;
             }
 
-            return new Blob([buffer], { type: "audio/wav" });
+            return new Blob([buffer], {type: "audio/wav"});
 
             function setUint16(data) {
                 view.setUint16(pos, data, true);
@@ -479,21 +598,40 @@
             }
         }
 
+        // Stop Ambient Sound Function
+        function stopAmbientSound(effect) {
+            if (ambientSources[effect] && ambientSources[effect].source) {
+                ambientSources[effect].source.stop();
+                ambientSources[effect].source.disconnect();
+                ambientSources[effect].source = null;
+            }
+            if (ambientGainNodes[effect]) {
+                ambientGainNodes[effect].disconnect();
+                delete ambientGainNodes[effect];
+            }
+        }
+
         // Event Listeners
         playBtn.addEventListener('click', () => {
             playAudio();
+            playBtn.disabled = true;
+            stopBtn.disabled = false;
+            pauseBtn.disabled = false;
         });
 
         pauseBtn.addEventListener('click', () => {
-            if (audioCtx.state === 'running') {
+            if (isPlaying && !isPaused) {
                 pauseAudio();
-            } else if (audioCtx.state === 'suspended') {
+            } else if (isPlaying && isPaused) {
                 resumeAudio();
             }
         });
 
         stopBtn.addEventListener('click', () => {
             stopAudio();
+            playBtn.disabled = false;
+            stopBtn.disabled = true;
+            pauseBtn.disabled = true;
         });
 
         downloadBtn.addEventListener('click', () => {
