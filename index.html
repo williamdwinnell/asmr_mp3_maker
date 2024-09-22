@@ -307,8 +307,27 @@
             }
         }
 
-        // Handle User Audio Upload
+        // Reset state when a new audio file is uploaded
         audioUpload.addEventListener('change', async (e) => {
+            // Stop any existing audio playback and reset the state
+            stopAudio();
+
+            // Reset all UI elements
+            playBtn.disabled = true;
+            pauseBtn.disabled = true;
+            stopBtn.disabled = true;
+            downloadBtn.disabled = true;
+            effectCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+                checkbox.disabled = true;
+            });
+            volumeSliders.forEach(slider => {
+                slider.value = 0.5;
+                slider.disabled = true;
+            });
+            uploadedFileDisplay.textContent = 'No file uploaded.';
+
+            // Handle the new file upload
             const file = e.target.files[0];
             if (file) {
                 const validTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/x-m4a'];
@@ -322,14 +341,12 @@
                     } catch (error) {
                         console.error('Error decoding uploaded audio:', error);
                         uploadedFileDisplay.textContent = 'Failed to load file.';
-                        alert('Failed to decode the audio file. Please ensure it is a valid MP3 file.');
+                        alert('Failed to decode the audio file. Please ensure it is a valid audio file.');
                     }
                 } else {
                     uploadedFileDisplay.textContent = 'Invalid file type.';
                     alert('Invalid file type. Please upload a valid MP3 file.');
                 }
-            } else {
-                uploadedFileDisplay.textContent = 'No file uploaded.';
             }
         });
 
@@ -476,66 +493,57 @@
             });
         }
 
-        // Download Function
+        // Updated Download Function using MediaRecorder to export as MP3 or OGG
         async function downloadMixedAudio() {
             if (!userAudioBuffer) {
                 alert('No audio loaded.');
                 return;
             }
 
-            // Create Offline Audio Context for rendering
-            const offlineCtx = new OfflineAudioContext(
-                userAudioBuffer.numberOfChannels,
-                userAudioBuffer.length + 600, // Extra buffer time for ambient sounds
-                userAudioBuffer.sampleRate
-            );
+            // Create a media stream from the audio context
+            const destination = audioCtx.createMediaStreamDestination();
 
-            // Create user audio source
-            const userSourceOffline = offlineCtx.createBufferSource();
-            userSourceOffline.buffer = userAudioBuffer;
-            userSourceOffline.loop = false;
+            // Connect all audio sources to the media destination
+            if (userSource) {
+                userSource.connect(destination);
+            }
 
-            const userGainOffline = offlineCtx.createGain();
-            userGainOffline.gain.value = 1;
-
-            userSourceOffline.connect(userGainOffline).connect(offlineCtx.destination);
-            userSourceOffline.start(0);
-
-            // Create ambient sound sources
-            ambientEffects.forEach(effect => {
-                const checkbox = document.querySelector(`.effects-options input[value="${effect}"]`);
-                const slider = document.querySelector(`.volume-slider[data-effect="${effect}"]`);
-                if (checkbox.checked && ambientSources[effect]) {
-                    const ambientSource = offlineCtx.createBufferSource();
-                    ambientSource.buffer = ambientSources[effect];
-                    ambientSource.loop = true;
-
-                    const ambientGainOffline = offlineCtx.createGain();
-                    ambientGainOffline.gain.value = parseFloat(slider.value);
-
-                    ambientSource.connect(ambientGainOffline).connect(offlineCtx.destination);
-                    ambientSource.start(0);
-                }
+            Object.keys(ambientGainNodes).forEach(effect => {
+                ambientGainNodes[effect].connect(destination);
             });
 
-            // Render the audio
-            try {
-                const renderedBuffer = await offlineCtx.startRendering();
-                // Convert to WAV
-                const wavBlob = bufferToWave(renderedBuffer, renderedBuffer.length);
-                const url = URL.createObjectURL(wavBlob);
+            // Set up MediaRecorder with MP3 or OGG format based on browser support
+            const mimeType = MediaRecorder.isTypeSupported('audio/mp3') ? 'audio/mp3' : 'audio/ogg';
+            const mediaRecorder = new MediaRecorder(destination.stream, { mimeType });
+
+            const chunks = [];
+            mediaRecorder.ondataavailable = event => {
+                if (event.data.size > 0) {
+                    chunks.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: mimeType });
+                const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.style.display = 'none';
                 a.href = url;
-                a.download = 'mixed_audio.wav';
+                a.download = 'mixed_audio.' + (mimeType === 'audio/mp3' ? 'mp3' : 'ogg');
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);
                 alert('Mixed audio downloaded successfully!');
-            } catch (error) {
-                console.error('Rendering failed:', error);
-                alert('Failed to download mixed audio.');
-            }
+            };
+
+            // Start recording and play the audio
+            mediaRecorder.start();
+            playAudio();
+
+            // Stop recording after audio finishes playing
+            userSource.onended = () => {
+                mediaRecorder.stop();
+            };
         }
 
         // Helper Function to Convert AudioBuffer to WAV Blob
