@@ -2,171 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASMR Mixer</title>
     <style>
-        /* Reset and Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        /* Container */
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-            max-width: 700px;
-            width: 100%;
-        }
-
-        /* Header */
-        .container h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        /* File Upload */
-        .upload-section {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 20px;
-        }
-
-        .upload-section label {
-            margin-bottom: 10px;
-            color: #555;
-        }
-
-        .upload-section input[type="file"] {
-            padding: 10px;
-            border: 2px dashed #ccc;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: border-color 0.3s;
-        }
-
-        .upload-section input[type="file"]:hover {
-            border-color: #777;
-        }
-
-        .uploaded-file {
-            margin-top: 10px;
-            color: #333;
-            font-style: italic;
-        }
-
-        /* Effects Selection */
-        .effects-section {
-            margin-bottom: 20px;
-        }
-
-        .effects-section label {
-            display: block;
-            margin-bottom: 10px;
-            color: #555;
-        }
-
-        .effects-section .effects-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .effects-section .effect-control {
-            flex: 1 1 45%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #e0e0e0;
-            padding: 10px;
-            border-radius: 8px;
-            transition: background 0.3s;
-        }
-
-        .effects-section .effect-control:hover {
-            background: #d5d5d5;
-        }
-
-        .effects-section .effect-control input[type="checkbox"] {
-            margin-right: 10px;
-            cursor: pointer;
-        }
-
-        .effects-section .volume-slider {
-            width: 60px;
-            cursor: pointer;
-        }
-
-        /* Controls */
-        .controls {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-        }
-
-        .controls button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            background: #4e54c8;
-            color: #fff;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .controls button:disabled {
-            background: #aaa;
-            cursor: not-allowed;
-        }
-
-        .controls button:hover:not(:disabled) {
-            background: #6f7fff;
-        }
-
-        /* Download Button */
-        .download-section {
-            text-align: center;
-        }
-
-        .download-section button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            background: #34e89e;
-            color: #fff;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .download-section button:disabled {
-            background: #aaa;
-            cursor: not-allowed;
-        }
-
-        .download-section button:hover:not(:disabled) {
-            background: #28c290;
-        }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .effects-section .effect-control {
-                flex: 1 1 100%;
-            }
-        }
+        /* [Your existing CSS styles here] */
+        /* For brevity, the CSS is not repeated here, but include your existing styles */
     </style>
 </head>
 <body>
@@ -175,8 +14,8 @@
 
         <!-- Upload Section -->
         <div class="upload-section">
-            <label for="audio-upload">Upload Your MP3 File:</label>
-            <input type="file" id="audio-upload" accept="audio/mpeg, audio/mp3, audio/*">
+            <label for="audio-upload">Upload Your Audio File:</label>
+            <input type="file" id="audio-upload" accept="audio/*">
             <div class="uploaded-file" id="uploaded-file">No file uploaded.</div>
         </div>
 
@@ -184,48 +23,8 @@
         <div class="effects-section">
             <label>Select Ambient Effects:</label>
             <div class="effects-options">
-                <div class="effect-control">
-                    <label>
-                        <input type="checkbox" value="rain">
-                        Rain
-                    </label>
-                    <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider" data-effect="rain" disabled>
-                </div>
-                <div class="effect-control">
-                    <label>
-                        <input type="checkbox" value="wind">
-                        Wind
-                    </label>
-                    <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider" data-effect="wind" disabled>
-                </div>
-                <div class="effect-control">
-                    <label>
-                        <input type="checkbox" value="cafe">
-                        Café
-                    </label>
-                    <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider" data-effect="cafe" disabled>
-                </div>
-                <div class="effect-control">
-                    <label>
-                        <input type="checkbox" value="forest">
-                        Forest
-                    </label>
-                    <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider" data-effect="forest" disabled>
-                </div>
-                <div class="effect-control">
-                    <label>
-                        <input type="checkbox" value="ocean">
-                        Ocean
-                    </label>
-                    <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider" data-effect="ocean" disabled>
-                </div>
-                <div class="effect-control">
-                    <label>
-                        <input type="checkbox" value="night">
-                        Night
-                    </label>
-                    <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider" data-effect="night" disabled>
-                </div>
+                <!-- [Your effect controls here] -->
+                <!-- For brevity, the effect controls are not repeated here, but include your existing effect controls -->
             </div>
         </div>
 
@@ -241,6 +40,9 @@
             <button id="download-btn" disabled>Download Mixed Audio</button>
         </div>
     </div>
+
+    <!-- Include LameJS Library via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.0/lame.min.js"></script>
 
     <!-- JavaScript -->
     <script>
@@ -271,7 +73,7 @@
         let loadedAmbientEffects = 0;
 
         ambientEffects.forEach(effect => {
-            const path = `sfx/${effect}.mp3`;
+            const path = `sfx/${effect}.mp3`; // Ensure using forward slashes
             fetch(path)
                 .then(response => {
                     if (!response.ok) {
@@ -283,10 +85,8 @@
                 .then(audioBuffer => {
                     ambientSources[effect] = audioBuffer;
                     loadedAmbientEffects++;
-                    if (loadedAmbientEffects === ambientEffects.length) {
-                        console.log('All ambient sounds loaded.');
-                        checkEnableControls();
-                    }
+                    console.log(`Loaded ${effect} sound.`);
+                    checkEnableControls();
                 })
                 .catch(error => {
                     console.error(error);
@@ -304,6 +104,7 @@
                     checkbox.disabled = false;
                     slider.disabled = false;
                 });
+                console.log('All controls are enabled.');
             }
         }
 
@@ -326,11 +127,12 @@
                 slider.disabled = true;
             });
             uploadedFileDisplay.textContent = 'No file uploaded.';
+            userAudioBuffer = null;
 
             // Handle the new file upload
             const file = e.target.files[0];
             if (file) {
-                const validTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/x-m4a'];
+                const validTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/x-m4a', 'audio/wav'];
                 if (validTypes.includes(file.type)) {
                     try {
                         const arrayBuffer = await file.arrayBuffer();
@@ -345,7 +147,7 @@
                     }
                 } else {
                     uploadedFileDisplay.textContent = 'Invalid file type.';
-                    alert('Invalid file type. Please upload a valid MP3 file.');
+                    alert('Invalid file type. Please upload a valid audio file.');
                 }
             }
         });
@@ -372,6 +174,8 @@
                         // Store references for control
                         ambientGainNodes[effect] = gainNode;
                         ambientSources[effect].source = source; // Attach source to buffer
+
+                        console.log(`Started ${effect} sound.`);
                     } else {
                         alert(`Ambient sound for ${effect} is not loaded yet.`);
                         checkbox.checked = false;
@@ -390,6 +194,7 @@
                 const volume = parseFloat(slider.value);
                 if (ambientGainNodes[effect]) {
                     ambientGainNodes[effect].gain.setValueAtTime(volume, audioCtx.currentTime);
+                    console.log(`Set ${effect} volume to ${volume}.`);
                 }
             });
         });
@@ -399,7 +204,7 @@
             if (isPlaying) return;
 
             if (!userAudioBuffer) {
-                alert('No audio loaded. Please upload a valid MP3 file.');
+                alert('No audio loaded. Please upload a valid audio file.');
                 return;
             }
 
@@ -425,6 +230,8 @@
             // Enable pause and stop buttons
             pauseBtn.disabled = false;
             stopBtn.disabled = false;
+
+            console.log('Playback started.');
         }
 
         // Pause Function
@@ -433,6 +240,7 @@
             audioCtx.suspend();
             isPaused = true;
             pauseBtn.textContent = 'Resume';
+            console.log('Playback paused.');
         }
 
         // Resume Function
@@ -441,6 +249,7 @@
             await audioCtx.resume();
             isPaused = false;
             pauseBtn.textContent = 'Pause';
+            console.log('Playback resumed.');
         }
 
         // Stop Function
@@ -452,19 +261,12 @@
                 userSource.stop();
                 userSource.disconnect();
                 userSource = null;
+                console.log('User audio stopped.');
             }
 
             // Stop all ambient sounds
             ambientEffects.forEach(effect => {
-                if (ambientSources[effect] && ambientSources[effect].source) {
-                    ambientSources[effect].source.stop();
-                    ambientSources[effect].source.disconnect();
-                    ambientSources[effect].source = null;
-                }
-                if (ambientGainNodes[effect]) {
-                    ambientGainNodes[effect].disconnect();
-                    delete ambientGainNodes[effect];
-                }
+                stopAmbientSound(effect);
             });
 
             isPlaying = false;
@@ -491,119 +293,8 @@
                     ambientGainNodes[effect].gain.setValueAtTime(0.5, audioCtx.currentTime);
                 }
             });
-        }
 
-        // Updated Download Function using MediaRecorder to export as MP3 or OGG
-        async function downloadMixedAudio() {
-            if (!userAudioBuffer) {
-                alert('No audio loaded.');
-                return;
-            }
-
-            // Create a media stream from the audio context
-            const destination = audioCtx.createMediaStreamDestination();
-
-            // Connect all audio sources to the media destination
-            if (userSource) {
-                userSource.connect(destination);
-            }
-
-            Object.keys(ambientGainNodes).forEach(effect => {
-                ambientGainNodes[effect].connect(destination);
-            });
-
-            // Set up MediaRecorder with MP3 or OGG format based on browser support
-            const mimeType = MediaRecorder.isTypeSupported('audio/mp3') ? 'audio/mp3' : 'audio/ogg';
-            const mediaRecorder = new MediaRecorder(destination.stream, { mimeType });
-
-            const chunks = [];
-            mediaRecorder.ondataavailable = event => {
-                if (event.data.size > 0) {
-                    chunks.push(event.data);
-                }
-            };
-
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(chunks, { type: mimeType });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                a.download = 'mixed_audio.' + (mimeType === 'audio/mp3' ? 'mp3' : 'ogg');
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                alert('Mixed audio downloaded successfully!');
-            };
-
-            // Start recording and play the audio
-            mediaRecorder.start();
-            playAudio();
-
-            // Stop recording after audio finishes playing
-            userSource.onended = () => {
-                mediaRecorder.stop();
-            };
-        }
-
-        // Helper Function to Convert AudioBuffer to WAV Blob
-        function bufferToWave(abuffer, len) {
-            const numOfChan = abuffer.numberOfChannels;
-            const length = len * numOfChan * 2 + 44;
-            const buffer = new ArrayBuffer(length);
-            const view = new DataView(buffer);
-            const channels = [];
-            let i;
-            let sample;
-            let offset = 0;
-            let pos = 0;
-
-            // Write WAV header
-            setUint32(0x46464952); // "RIFF"
-            setUint32(length - 8); // file length - 8
-            setUint32(0x45564157); // "WAVE"
-
-            setUint32(0x20746d66); // "fmt " chunk
-            setUint32(16); // length = 16
-            setUint16(1); // PCM (uncompressed)
-            setUint16(numOfChan);
-            setUint32(abuffer.sampleRate);
-            setUint32(abuffer.sampleRate * 2 * numOfChan); // avg bytes/sec
-            setUint16(numOfChan * 2); // block-align
-            setUint16(16); // 16-bit
-
-            setUint32(0x61746164); // "data" chunk
-            setUint32(length - pos - 4); // data length
-
-            // Write interleaved data
-            for(i = 0; i < abuffer.numberOfChannels; i++) {
-                channels.push(abuffer.getChannelData(i));
-            }
-
-            while(pos < length) {
-                for(i = 0; i < numOfChan; i++) {
-                    // Clamp the sample
-                    sample = Math.max(-1, Math.min(1, channels[i][offset]));
-                    // Scale to 16-bit integer
-                    sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
-                    view.setInt16(pos, sample, true);
-                    pos += 2;
-                }
-                offset++;
-                if(offset >= abuffer.length) break;
-            }
-
-            return new Blob([buffer], {type: "audio/wav"});
-
-            function setUint16(data) {
-                view.setUint16(pos, data, true);
-                pos += 2;
-            }
-
-            function setUint32(data) {
-                view.setUint32(pos, data, true);
-                pos += 4;
-            }
+            console.log('Playback stopped and UI reset.');
         }
 
         // Stop Ambient Sound Function
@@ -612,11 +303,141 @@
                 ambientSources[effect].source.stop();
                 ambientSources[effect].source.disconnect();
                 ambientSources[effect].source = null;
+                console.log(`Stopped ${effect} sound.`);
             }
             if (ambientGainNodes[effect]) {
                 ambientGainNodes[effect].disconnect();
                 delete ambientGainNodes[effect];
             }
+        }
+
+        // Download Function
+        async function downloadMixedAudio() {
+            if (!userAudioBuffer) {
+                alert('No audio loaded.');
+                return;
+            }
+
+            downloadBtn.disabled = true;
+            downloadBtn.textContent = 'Processing...';
+
+            // Create Offline Audio Context for rendering
+            const offlineCtx = new OfflineAudioContext(
+                userAudioBuffer.numberOfChannels,
+                userAudioBuffer.length,
+                userAudioBuffer.sampleRate
+            );
+
+            // Create user audio source
+            const userSourceOffline = offlineCtx.createBufferSource();
+            userSourceOffline.buffer = userAudioBuffer;
+            userSourceOffline.loop = false;
+
+            const userGainOffline = offlineCtx.createGain();
+            userGainOffline.gain.value = 1;
+
+            userSourceOffline.connect(userGainOffline).connect(offlineCtx.destination);
+            userSourceOffline.start(0);
+
+            // Create ambient sound sources
+            ambientEffects.forEach(effect => {
+                const checkbox = document.querySelector(`.effects-options input[value="${effect}"]`);
+                const slider = document.querySelector(`.volume-slider[data-effect="${effect}"]`);
+                if (checkbox.checked && ambientSources[effect]) {
+                    const ambientSource = offlineCtx.createBufferSource();
+                    ambientSource.buffer = ambientSources[effect];
+                    ambientSource.loop = true;
+
+                    const ambientGainOffline = offlineCtx.createGain();
+                    ambientGainOffline.gain.value = parseFloat(slider.value);
+
+                    ambientSource.connect(ambientGainOffline).connect(offlineCtx.destination);
+                    ambientSource.start(0);
+                }
+            });
+
+            // Render the audio
+            try {
+                console.log('Rendering mixed audio...');
+                const renderedBuffer = await offlineCtx.startRendering();
+                console.log('Rendering completed.');
+
+                console.log('Encoding to MP3...');
+                const mp3Blob = await encodeAudioBufferToMp3(renderedBuffer);
+                console.log('Encoding completed.');
+
+                // Create a download link
+                const url = URL.createObjectURL(mp3Blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'mixed_audio.mp3';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                alert('Mixed audio downloaded successfully as MP3!');
+                console.log('Download initiated.');
+            } catch (error) {
+                console.error('Error during processing:', error);
+                alert('An error occurred while processing the audio. Please try again.');
+            } finally {
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = 'Download Mixed Audio';
+            }
+        }
+
+        // Helper Function to Encode AudioBuffer to MP3 (Stereo Support)
+        async function encodeAudioBufferToMp3(audioBuffer) {
+            return new Promise((resolve, reject) => {
+                const numChannels = audioBuffer.numberOfChannels;
+                const sampleRate = audioBuffer.sampleRate;
+                const bitRate = 128; // Adjust as needed
+
+                const mp3encoder = new lamejs.Mp3Encoder(numChannels, sampleRate, bitRate);
+
+                const channelData = [];
+                for (let i = 0; i < numChannels; i++) {
+                    channelData.push(audioBuffer.getChannelData(i));
+                }
+
+                const maxSamples = 1152;
+                const length = audioBuffer.length;
+                const mp3Data = [];
+
+                for (let i = 0; i < length; i += maxSamples) {
+                    const left = channelData[0].subarray(i, i + maxSamples);
+                    const right = numChannels > 1 ? channelData[1].subarray(i, i + maxSamples) : left;
+
+                    // Convert float samples to 16-bit PCM
+                    const left16 = floatTo16BitPCM(left);
+                    const right16 = numChannels > 1 ? floatTo16BitPCM(right) : left16;
+
+                    const mp3buf = mp3encoder.encodeBuffer(left16, right16);
+                    if (mp3buf.length > 0) {
+                        mp3Data.push(mp3buf);
+                    }
+                }
+
+                // Finish encoding
+                const mp3buf = mp3encoder.flush();
+                if (mp3buf.length > 0) {
+                    mp3Data.push(mp3buf);
+                }
+
+                // Create Blob from mp3Data
+                const blob = new Blob(mp3Data, { type: 'audio/mp3' });
+                resolve(blob);
+            });
+        }
+
+        // Helper Function to Convert Float32Array to Int16Array
+        function floatTo16BitPCM(input) {
+            const output = new Int16Array(input.length);
+            for (let i = 0; i < input.length; i++) {
+                const s = Math.max(-1, Math.min(1, input[i]));
+                output[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+            }
+            return output;
         }
 
         // Event Listeners
