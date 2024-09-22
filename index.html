@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASMR Mixer</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Container */
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        /* Header */
+        .container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* File Upload */
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .upload-section label {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .upload-section input[type="file"] {
+            padding: 10px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .upload-section input[type="file"]:hover {
+            border-color: #777;
+        }
+
+        /* Effects Selection */
+        .effects-section {
+            margin-bottom: 20px;
+        }
+
+        .effects-section label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .effects-section .effects-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .effects-section .effects-options label {
+            flex: 1 1 30%;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s;
+            user-select: none;
+        }
+
+        .effects-section .effects-options label:hover {
+            background: #d5d5d5;
+        }
+
+        .effects-section .effects-options input {
+            display: none;
+        }
+
+        .effects-section .effects-options input:checked + span {
+            background: #a0c4ff;
+            color: #fff;
+            border-radius: 4px;
+            padding: 5px;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .controls button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #4e54c8;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .controls button:hover {
+            background: #6f7fff;
+        }
+
+        /* Download Button */
+        .download-section {
+            text-align: center;
+        }
+
+        .download-section button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #34e89e;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .download-section button:hover {
+            background: #28c290;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .effects-section .effects-options label {
+                flex: 1 1 45%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ASMR Mixer</h1>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <label for="audio-upload">Upload Your MP3 File:</label>
+            <input type="file" id="audio-upload" accept="audio/mp3">
+        </div>
+
+        <!-- Effects Selection -->
+        <div class="effects-section">
+            <label>Select Ambient Effects:</label>
+            <div class="effects-options">
+                <label>
+                    <input type="checkbox" value="rain">
+                    <span>Rain</span>
+                </label>
+                <label>
+                    <input type="checkbox" value="wind">
+                    <span>Wind</span>
+                </label>
+                <label>
+                    <input type="checkbox" value="cafe">
+                    <span>Café</span>
+                </label>
+                <label>
+                    <input type="checkbox" value="forest">
+                    <span>Forest</span>
+                </label>
+                <label>
+                    <input type="checkbox" value="ocean">
+                    <span>Ocean</span>
+                </label>
+                <label>
+                    <input type="checkbox" value="night">
+                    <span>Night</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button id="play-btn">Play</button>
+            <button id="pause-btn">Pause</button>
+            <button id="stop-btn">Stop</button>
+        </div>
+
+        <!-- Download Section -->
+        <div class="download-section">
+            <button id="download-btn">Download Mixed Audio</button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Audio Context
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+
+        // Elements
+        const audioUpload = document.getElementById('audio-upload');
+        const playBtn = document.getElementById('play-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const effectCheckboxes = document.querySelectorAll('.effects-options input');
+
+        // Variables
+        let userAudioBuffer = null;
+        let ambientBuffers = {};
+        let selectedEffects = [];
+        let isPlaying = false;
+        let sourceNodes = [];
+        let ambientSources = [];
+
+        // Load Ambient Sounds
+        const ambientSounds = {
+            rain: 'data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAwAAAAD//2Q==', // Placeholder: Replace with actual base64 audio data
+            wind: 'data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAwAAAAD//2Q==',
+            cafe: 'data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAwAAAAD//2Q==',
+            forest: 'data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAwAAAAD//2Q==',
+            ocean: 'data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAwAAAAD//2Q==',
+            night: 'data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAwAAAAD//2Q=='
+        };
+
+        // Function to fetch and decode ambient sounds
+        async function loadAmbientSounds() {
+            const entries = Object.entries(ambientSounds);
+            for (const [key, url] of entries) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok for ${key}`);
+                    }
+                    const arrayBuffer = await response.arrayBuffer();
+                    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+                    ambientBuffers[key] = audioBuffer;
+                } catch (error) {
+                    console.error(`Error loading ${key} sound:`, error);
+                }
+            }
+        }
+
+        // Load default ambient sounds
+        loadAmbientSounds();
+
+        // Function to load default user audio
+        async function loadDefaultAudio() {
+            const defaultAudioURL = 'data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAwAAAAD//2Q=='; // Placeholder: Replace with actual base64 audio data
+            try {
+                const response = await fetch(defaultAudioURL);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok for default audio');
+                }
+                const arrayBuffer = await response.arrayBuffer();
+                userAudioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+            } catch (error) {
+                console.error('Error loading default audio:', error);
+            }
+        }
+
+        // Load default audio on startup
+        loadDefaultAudio();
+
+        // Handle User Audio Upload
+        audioUpload.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file && file.type === 'audio/mp3') {
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    userAudioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+                    alert('Audio file loaded successfully!');
+                } catch (error) {
+                    console.error('Error decoding uploaded audio:', error);
+                    alert('Failed to load the audio file. Please try a different MP3 file.');
+                }
+            } else {
+                alert('Please upload a valid MP3 file.');
+            }
+        });
+
+        // Handle Effect Selection
+        effectCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                selectedEffects = Array.from(effectCheckboxes)
+                                        .filter(cb => cb.checked)
+                                        .map(cb => cb.value);
+            });
+        });
+
+        // Play Function
+        async function playAudio() {
+            if (isPlaying) return;
+
+            if (!userAudioBuffer) {
+                alert('No audio loaded.');
+                return;
+            }
+
+            // Resume AudioContext if suspended
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+
+            // Create source for user audio
+            const userSource = audioCtx.createBufferSource();
+            userSource.buffer = userAudioBuffer;
+            userSource.connect(audioCtx.destination);
+            userSource.start(0);
+            sourceNodes.push(userSource);
+
+            // Create sources for ambient sounds
+            selectedEffects.forEach(effect => {
+                const ambientBuffer = ambientBuffers[effect];
+                if (ambientBuffer) {
+                    const ambientSource = audioCtx.createBufferSource();
+                    ambientSource.buffer = ambientBuffer;
+                    ambientSource.loop = true;
+                    ambientSource.connect(audioCtx.destination);
+                    ambientSource.start(0);
+                    ambientSources.push(ambientSource);
+                } else {
+                    console.warn(`Ambient sound "${effect}" is not loaded.`);
+                }
+            });
+
+            isPlaying = true;
+        }
+
+        // Pause Function
+        function pauseAudio() {
+            if (!isPlaying) return;
+            audioCtx.suspend();
+        }
+
+        // Resume Function
+        function resumeAudio() {
+            if (isPlaying && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Stop Function
+        function stopAudio() {
+            if (!isPlaying) return;
+            sourceNodes.forEach(source => source.stop());
+            ambientSources.forEach(source => source.stop());
+            sourceNodes = [];
+            ambientSources = [];
+            isPlaying = false;
+        }
+
+        // Download Function
+        async function downloadMixedAudio() {
+            if (!userAudioBuffer) {
+                alert('No audio loaded.');
+                return;
+            }
+
+            // Create Offline Audio Context for rendering
+            const offlineCtx = new OfflineAudioContext(
+                userAudioBuffer.numberOfChannels,
+                userAudioBuffer.length,
+                userAudioBuffer.sampleRate
+            );
+
+            // User Audio Source
+            const userSource = offlineCtx.createBufferSource();
+            userSource.buffer = userAudioBuffer;
+            userSource.connect(offlineCtx.destination);
+            userSource.start(0);
+
+            // Ambient Sources
+            selectedEffects.forEach(effect => {
+                const ambientBuffer = ambientBuffers[effect];
+                if (ambientBuffer) {
+                    const ambientSource = offlineCtx.createBufferSource();
+                    ambientSource.buffer = ambientBuffer;
+                    ambientSource.loop = true;
+                    ambientSource.connect(offlineCtx.destination);
+                    ambientSource.start(0);
+                }
+            });
+
+            // Render the audio
+            try {
+                const renderedBuffer = await offlineCtx.startRendering();
+                // Convert to WAV
+                const wavBlob = bufferToWave(renderedBuffer, renderedBuffer.length);
+                const url = URL.createObjectURL(wavBlob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'mixed_audio.wav';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                alert('Mixed audio downloaded successfully!');
+            } catch (error) {
+                console.error('Rendering failed:', error);
+                alert('Failed to download mixed audio.');
+            }
+        }
+
+        // Helper function to convert buffer to WAV
+        function bufferToWave(abuffer, len) {
+            const numOfChan = abuffer.numberOfChannels;
+            const length = len * numOfChan * 2 + 44;
+            const buffer = new ArrayBuffer(length);
+            const view = new DataView(buffer);
+            const channels = [];
+            let i;
+            let sample;
+            let offset = 0;
+            let pos = 0;
+
+            // Write WAV header
+            setUint32(0x46464952); // "RIFF"
+            setUint32(length - 8); // file length - 8
+            setUint32(0x45564157); // "WAVE"
+
+            setUint32(0x20746d66); // "fmt " chunk
+            setUint32(16); // length = 16
+            setUint16(1); // PCM (uncompressed)
+            setUint16(numOfChan);
+            setUint32(abuffer.sampleRate);
+            setUint32(abuffer.sampleRate * 2 * numOfChan); // avg bytes/sec
+            setUint16(numOfChan * 2); // block-align
+            setUint16(16); // 16-bit
+
+            setUint32(0x61746164); // "data" chunk
+            setUint32(length - pos - 4); // data length
+
+            // Write interleaved data
+            for (i = 0; i < abuffer.numberOfChannels; i++) {
+                channels.push(abuffer.getChannelData(i));
+            }
+
+            while (pos < length) {
+                for (i = 0; i < numOfChan; i++) {
+                    // Clamp the sample
+                    sample = Math.max(-1, Math.min(1, channels[i][offset]));
+                    // Scale to 16-bit integer
+                    sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+                    view.setInt16(pos, sample, true);
+                    pos += 2;
+                }
+                offset++;
+                if (offset >= abuffer.length) break;
+            }
+
+            return new Blob([buffer], { type: "audio/wav" });
+
+            function setUint16(data) {
+                view.setUint16(pos, data, true);
+                pos += 2;
+            }
+
+            function setUint32(data) {
+                view.setUint32(pos, data, true);
+                pos += 4;
+            }
+        }
+
+        // Event Listeners
+        playBtn.addEventListener('click', () => {
+            playAudio();
+        });
+
+        pauseBtn.addEventListener('click', () => {
+            if (audioCtx.state === 'running') {
+                pauseAudio();
+            } else if (audioCtx.state === 'suspended') {
+                resumeAudio();
+            }
+        });
+
+        stopBtn.addEventListener('click', () => {
+            stopAudio();
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            downloadMixedAudio();
+        });
+    </script>
+</body>
+</html>
